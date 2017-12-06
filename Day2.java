@@ -1,13 +1,40 @@
 import java.io.*;
+import java.util.Arrays;
+import java.util.stream.IntStream;
 
 public class Day2 {
 	
 	public static void main(String[] args) {
-      System.out.println(args[0]);
+		//Day2 day = new Day2(args[0]); //this was the old way :D
+		Day2 day = new Day2();
+		String[] input = String.join("\n"
+		, "116	1470	2610	179	2161	2690	831	1824	2361	1050	2201	118	145	2275	2625	2333"
+		, "976	220	1129	553	422	950	332	204	1247	1092	1091	159	174	182	984	713"
+		, "84	78	773	62	808	83	1125	1110	1184	145	1277	982	338	1182	75	679"
+		, "3413	3809	3525	2176	141	1045	2342	2183	157	3960	3084	2643	119	108	3366	2131"
+		, "1312	205	343	616	300	1098	870	1008	1140	1178	90	146	980	202	190	774"
+		, "4368	3905	3175	4532	3806	1579	4080	259	2542	221	4395	4464	208	3734	234	4225"
+		, "741	993	1184	285	1062	372	111	118	63	843	325	132	854	105	956	961"
+		, "85	79	84	2483	858	2209	2268	90	2233	1230	2533	322	338	68	2085	1267"
+		, "2688	2022	112	130	1185	103	1847	3059	911	107	2066	1788	2687	2633	415	1353"
+		, "76	169	141	58	161	66	65	225	60	152	62	64	156	199	80	56"
+		, "220	884	1890	597	3312	593	4259	222	113	2244	3798	4757	216	1127	4400	178"
+		, "653	369	216	132	276	102	265	889	987	236	239	807	1076	932	84	864"
+		, "799	739	75	1537	82	228	69	1397	1396	1203	1587	63	313	1718	1375	469"
+		, "1176	112	1407	136	1482	1534	1384	1202	604	851	190	284	1226	113	114	687"
+		, "73	1620	81	1137	812	75	1326	1355	1545	1666	1356	1681	1732	85	128	902"
+		, "571	547	160	237	256	30	496	592	385	576	183	692	192	387	647	233"
+		).split("\\n");
+		
+		System.out.println("Part A result: "+ day.partA(input));
+		System.out.println("Part B result: "+ day.partB(input));
+    }
+	
+	public void Day2 (String filepath) {
 	  BufferedReader reader = null;
 	  FileInputStream fis = null;
       try {
-            fis = new FileInputStream(args[0]);
+            fis = new FileInputStream(filepath);
             reader = new BufferedReader(new InputStreamReader(fis));
                     
             String line = reader.readLine();
@@ -16,7 +43,6 @@ public class Day2 {
                 String[] strArray = line.split("\t");
 				int[] array = new int[strArray.length];
 				for(int i = 0; i < strArray.length; i++) {
-					//if (Integer.parseInt(strArray[i]) % 2 == 0) 
 					array[i] = Integer.parseInt(strArray[i]);
 				}
 				for(int i=0; i<array.length; i++)
@@ -25,34 +51,69 @@ public class Day2 {
 					{
 						float x = (float)array[i]/array[j];
 						if ( x==Math.ceil(x) && i != j) {
-							System.out.println("found i:" + array[i]);
-							System.out.println("found j:" + array[j]);
-							System.out.println("result:" + x);
-							System.out.println("result ceiled:" + Math.ceil(x));
 							checksum += x;
 						}
-						
 					}
 				}
-				System.out.println(checksum);
+				System.out.println(checksum); //32020, 236
                 line = reader.readLine();
-				//break;
             }           
           
         } catch (FileNotFoundException ex) {
-            //Logger.getLogger(BufferedReaderExample.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex.getMessage());
         } catch (IOException ex) {
-            //Logger.getLogger(BufferedReaderExample.class.getName()).log(Level.SEVERE, null, ex);
-          
+            System.out.println(ex.getMessage());
         } finally {
             try {
                 reader.close();
                 fis.close();
             } catch (IOException ex) {
-                //Logger.getLogger(BufferedReaderExample.class.getName()).log(Level.SEVERE, null, ex);
+				System.out.println(ex.getMessage());
             }
         }
-
-    }
-
+	}
+	
+	public int partA(String[] lines) {
+		return Arrays.stream(lines).mapToInt(line -> 
+		{
+			String[] numbers = line.split("\\t");
+			int val = Arrays.stream(numbers)
+				.mapToInt(p -> Integer.parseInt(p))
+				.map(val1 -> 
+				{
+					return val1 - Arrays.stream(numbers)
+						.mapToInt(p -> Integer.parseInt(p))
+						.min()
+						.orElse(0);
+				})
+				.max()
+				.orElse(0);
+			return val;
+		}).sum();
+	}
+	
+	public int partB(String[] lines) {
+		return Arrays.stream(lines).mapToInt(line -> 
+		{
+			String[] numbers = line.split("\\t");
+			int val = Arrays.stream(numbers)
+				.mapToInt(p -> Integer.parseInt(p))
+				.map(val1 -> 
+				{
+					return inretval = Arrays.stream(numbers)
+						.mapToInt(p -> Integer.parseInt(p))
+						.filter(val2 ->
+						{
+							float x = (((float)val1)/(float)(val2));
+							return x == Math.ceil(x);
+						})
+						.map(v -> val1 / v) 
+						.max()
+						.orElse(0);
+				})
+				.max()
+				.orElse(0);
+			return val;
+		}).sum();
+	}
 }
